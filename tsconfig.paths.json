@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.paths.json",
+  "compilerOptions": {
+    "paths": {
+      "@common/*": ["./src/modules/common/*"],
+      "@styles/*": ["./src/styles/*"],
+      "@auth/*": ["./src/modules/auth/*"],
+      "@dashboard/*": ["./src/modules/dashboard/*"],
+      "@task/*": ["./src/modules/task/*"]
+    }
+  }
+}

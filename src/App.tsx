@@ -1,18 +1,21 @@
-import { useEffect } from "react";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+
+// Pages
+import HomePage from "@pages/HomePage";
+import DashboardPage from "@pages/DashboardPage";
 
 const App = () => {
-  useEffect(() => {
-    (async () => {
-      // const API_URL: string = process.env.REACT_APP_API_URL;
-      // const response = await fetch(API_URL);
-      // const data = await response.json();
-      // console.log(data);
-    })();
-  }, []);
-
   return (
     <div className="App">
-      <h1>Another Todo App</h1>
+      <Router>
+        <Switch>
+          <Route path="/dashboard/:id" component={DashboardPage} />
+          <Route path="/" component={HomePage} />
+          <Route>
+            <h1>Not Found</h1>
+          </Route>
+        </Switch>
+      </Router>
     </div>
   );
 };

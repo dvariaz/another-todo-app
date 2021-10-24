@@ -1,24 +1,34 @@
-import DashboardCard from "@dashboard/components/DashboardCard";
-import { useGetDashboardsQuery } from "@api/services/DashboardService";
+// Types
 import { Dashboard } from "@dashboard/types/Dashboard";
+
+// Components
+import DashboardCard from "@dashboard/components/DashboardCard";
+import ProfileDropdown from "@common/components/ProfileDropdown";
+
+// Hooks
+import { useGetDashboardsQuery } from "@api/services/DashboardService";
 
 const HomePage = () => {
   const { data, error, isLoading } = useGetDashboardsQuery();
 
   return (
-    <div>
-      <h1>Home</h1>
+    <div className="page">
+      <header className="flex items-center">
+        <h1 className="flex-1">Welcome User!</h1>
+        <ProfileDropdown name="John Doe" />
+      </header>
       {isLoading ? (
         <span>Cargando</span>
       ) : (
         data && (
-          <div className="grid grid-cols-3 gap-2">
+          <div className="card-container p-5 grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-5">
             {data.map((dashboard: Dashboard) => (
               <DashboardCard
                 key={dashboard._id}
                 title={dashboard.title}
                 description={dashboard.description}
                 shared_users={dashboard.shared_users.length}
+                background_photo={dashboard.background_photo}
                 url={"dashboard/" + dashboard._id}
               />
             ))}

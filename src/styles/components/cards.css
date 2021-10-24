@@ -1,0 +1,21 @@
+.card {
+  @apply bg-white rounded-2xl;
+
+  box-shadow: 0px 15px 16px -12px rgba(240, 240, 240, 0.65);
+}
+
+.card-container {
+  @apply border-primary-50 border-2 rounded-3xl;
+
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.bg-masked {
+  @apply absolute top-0 left-0 w-full h-full object-cover;
+
+  -webkit-mask-image: linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0),
+    rgba(0, 0, 0, 0.2)
+  );
+}

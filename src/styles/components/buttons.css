@@ -1,0 +1,26 @@
+button:disabled {
+  pointer-events: none;
+  opacity: 50%;
+}
+
+button,
+[class^="btn"],
+[class^=" btn"] {
+  @apply inline-block rounded-md min-w-sm max-w-xs px-3 py-2 text-sm font-normal text-center;
+}
+
+.btn {
+  @apply text-gray-300 bg-gray-150 hover:bg-gray-100 active:bg-gray-200;
+}
+
+.btn-primary {
+  @apply text-white bg-primary hover:bg-primary-200 active:bg-primary-700;
+}
+
+.btn-success {
+  @apply text-white bg-success hover:bg-success-200 active:bg-success-700;
+}
+
+.btn-danger {
+  @apply text-white bg-danger hover:bg-danger-200 active:bg-danger-700;
+}

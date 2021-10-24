@@ -12,6 +12,7 @@
     "@types/react": "^17.0.29",
     "@types/react-dom": "^17.0.9",
     "axios": "^0.23.0",
+    "classnames": "^2.3.1",
     "node-sass": "^6.0.1",
     "pluralize": "^8.0.0",
     "react": "^17.0.2",
@@ -54,6 +55,7 @@
     "autoprefixer": "^9.8.8",
     "craco-alias": "^3.0.1",
     "postcss": "^7.0.39",
+    "postcss-nested": "^4.2.3",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.16"
   }
 }

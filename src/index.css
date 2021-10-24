@@ -1,3 +1,8 @@
 @tailwind base;
+@import "@styles/layout/page.css";
+
 @tailwind components;
+@import "@styles/components/buttons.css";
+@import "@styles/components/cards.css";
+
 @tailwind utilities;

@@ -1,0 +1,5 @@
+.circle-photo {
+  @apply rounded-full;
+  width: 32px;
+  height: 32px;
+}

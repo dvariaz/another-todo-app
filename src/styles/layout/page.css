@@ -1,7 +1,7 @@
 .page {
-  @apply m-10 max-w-7xl mx-auto;
+  @apply p-10 max-w-7xl mx-auto;
+}
 
-  h1 {
-    @apply text-2xl text-gray-700 font-bold my-5;
-  }
+.page-title {
+  @apply text-2xl text-gray-700 font-bold;
 }

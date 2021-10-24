@@ -13,8 +13,8 @@ const HomePage = () => {
 
   return (
     <div className="page">
-      <header className="flex items-center">
-        <h1 className="flex-1">Welcome User!</h1>
+      <header className="flex items-center mb-5">
+        <h1 className="page-title flex-1 ">Welcome User!</h1>
         <ProfileDropdown name="John Doe" />
       </header>
       {isLoading ? (

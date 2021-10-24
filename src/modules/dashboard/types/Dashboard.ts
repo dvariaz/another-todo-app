@@ -7,5 +7,5 @@ export interface Dashboard {
   description: string;
   background_photo: string;
   shared_users: User[];
-  tasks_groups: TaskGroup[];
+  task_groups: TaskGroup[];
 }

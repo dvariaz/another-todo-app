@@ -4,5 +4,6 @@
 @tailwind components;
 @import "@styles/components/buttons.css";
 @import "@styles/components/cards.css";
+@import "@styles/components/photos.css";
 
 @tailwind utilities;

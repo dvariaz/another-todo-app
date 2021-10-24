@@ -1,8 +1,8 @@
 export interface User {
-  _id: String;
-  name: String;
-  email: String;
-  profile_photo: String;
+  _id: string;
+  name: string;
+  email: string;
+  profile_photo: string;
   role: "USER_ROLE" | "ADMIN_ROLE";
   createdAt: Date;
   updatedAt: Date;

@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 
+import "@dashboard/styles/DashboardCard.css";
+
 // Components
 import Feature from "@common/components/Feature";
 

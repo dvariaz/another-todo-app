@@ -46,11 +46,15 @@ module.exports = {
         sm: "150px",
         md: "300px",
       },
+      maxWidth: {
+        "8xl": "96rem",
+      },
     },
   },
   variants: {
     extend: {
       backgroundColor: ["active"],
+      margin: ["first", "last"],
     },
   },
   plugins: [],

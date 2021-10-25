@@ -5,7 +5,7 @@ button:disabled {
 
 [class^="btn"],
 [class^=" btn"] {
-  @apply inline-block rounded-md min-w-sm max-w-xs px-3 py-2 text-sm font-normal text-center;
+  @apply inline-block rounded-md min-w-sm max-w-sm px-3 py-3 text-sm font-normal text-center;
 }
 
 .btn {

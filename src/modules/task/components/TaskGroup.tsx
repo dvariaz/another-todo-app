@@ -18,6 +18,9 @@ const TaskGroup = ({ name, className, children }: ITaskGroupProps) => {
         </button>
       </div>
       <div>{children}</div>
+      <div>
+        <button className="btn w-full">Add Task</button>
+      </div>
     </div>
   );
 };

@@ -1,5 +1,5 @@
 .page {
-  @apply p-10 max-w-7xl mx-auto;
+  @apply p-10;
 }
 
 .page-title {

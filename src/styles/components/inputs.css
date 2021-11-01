@@ -1,0 +1,8 @@
+.input {
+  @apply relative;
+
+  &:focus {
+    @apply border-gray-100 border-b;
+    outline: none;
+  }
+}

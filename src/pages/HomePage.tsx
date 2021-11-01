@@ -1,5 +1,5 @@
 // Types
-import { Dashboard } from "@dashboard/types/Dashboard";
+import { IDashboard } from "@dashboard/types/Dashboard";
 
 // Components
 import DashboardCard from "@dashboard/components/DashboardCard";
@@ -22,7 +22,7 @@ const HomePage = () => {
       ) : (
         data && (
           <div className="card-container p-5 grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-5">
-            {data.map((dashboard: Dashboard) => (
+            {data.map((dashboard: IDashboard) => (
               <DashboardCard
                 key={dashboard._id}
                 title={dashboard.title}

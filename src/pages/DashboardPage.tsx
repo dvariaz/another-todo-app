@@ -2,22 +2,18 @@ import pluralize from "pluralize";
 
 // Types
 import { RouteComponentProps } from "react-router";
+import { TDashboardParams } from "src/App";
 
 // API
 import { useGetDashboardQuery } from "@api/services/DashboardService";
 
 //Components
 import TaskGroup from "@task/components/TaskGroup";
-import TaskCard from "@task/components/TaskCard";
 import Feature from "@common/components/Feature";
 import ProfileDropdown from "@common/components/ProfileDropdown";
 
-type TDashboardParams = {
-  id: string;
-};
-
 const DashboardPage = ({ match }: RouteComponentProps<TDashboardParams>) => {
-  const { data, error, isLoading } = useGetDashboardQuery(match.params.id);
+  const { data, isLoading } = useGetDashboardQuery(match.params.id);
 
   return (
     <div>
@@ -43,6 +39,7 @@ const DashboardPage = ({ match }: RouteComponentProps<TDashboardParams>) => {
                 <div className="flex">
                   {data.shared_users.map((user) => (
                     <img
+                      key={user._id}
                       src={user.profile_photo}
                       alt={`${user.name} photo`}
                       className="circle-photo ml-2"
@@ -59,18 +56,11 @@ const DashboardPage = ({ match }: RouteComponentProps<TDashboardParams>) => {
                       key={task_group._id}
                       className="mx-2 first:ml-8 last:mr-8"
                     >
-                      <TaskGroup name={task_group.name}>
-                        {task_group.tasks.map((task) => (
-                          <TaskCard
-                            key={task._id}
-                            title={task.title}
-                            description={task.description}
-                            shared_users={task.shared_users}
-                            created_by={task.created_by}
-                            className="mb-4"
-                          />
-                        ))}
-                      </TaskGroup>
+                      <TaskGroup
+                        id={task_group._id}
+                        name={task_group.name}
+                        initialTasks={task_group.tasks}
+                      />
                     </div>
                   ))}
                 <div className="first:ml-8 last:mr-8">

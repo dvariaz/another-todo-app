@@ -4,6 +4,11 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import HomePage from "@pages/HomePage";
 import DashboardPage from "@pages/DashboardPage";
 
+// Types
+export type TDashboardParams = {
+  id: string;
+};
+
 const App = () => {
   return (
     <div className="App">

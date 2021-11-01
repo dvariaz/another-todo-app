@@ -1,23 +1,30 @@
-import { useState } from "react";
 import classNames from "classnames";
 
 import "@task/styles/TaskGroup.css";
 
 // Types
-import { Task } from "@task/types/Task";
+import { ITask } from "@task/types/Task";
+import { TDashboardParams } from "src/App";
 
 // Components
 import TaskCard from "@task/components/TaskCard";
 import EditableTaskCard from "./EditableTaskCard";
 
+// Hooks
+import { useParams } from "react-router";
+import useTaskGroupHandler from "@task/hooks/useTaskGroupHandler";
+
 interface ITaskGroupProps {
+  id: string;
   name: string;
-  tasks: Task[];
+  initialTasks: ITask[];
   className?: string;
 }
 
-const TaskGroup = ({ name, tasks, className }: ITaskGroupProps) => {
-  const [isAdding, setIsAdding] = useState<boolean>(false);
+const TaskGroup = ({ id, name, initialTasks, className }: ITaskGroupProps) => {
+  const { id: dashboardId } = useParams<TDashboardParams>();
+  const { tasks, addNewTask, removeNewTask, setTaskEditableStatus, saveTask } =
+    useTaskGroupHandler(initialTasks);
 
   return (
     <div className={classNames("task-group", className)}>
@@ -28,30 +35,44 @@ const TaskGroup = ({ name, tasks, className }: ITaskGroupProps) => {
         </button>
       </div>
       <div>
-        {tasks.map((task) => (
-          <TaskCard
-            key={task._id}
-            title={task.title}
-            description={task.description}
-            shared_users={task.shared_users}
-            created_by={task.created_by}
-            className="mb-4"
-          />
-        ))}
-        {isAdding && (
-          <EditableTaskCard
-            className="mb-4"
-            onSave={(data) => console.log(data)}
-            onBlur={(isDirty) => {
-              if (!isDirty) {
-                setIsAdding(false);
+        {tasks.map((task, index) =>
+          task.isEditing ? (
+            <EditableTaskCard
+              key={`${task._id}_${index}`}
+              {...task}
+              className="mb-4"
+              onSave={async (data) =>
+                saveTask({
+                  task: data,
+                  index,
+                  dashboardId: dashboardId,
+                  taskGroupId: id,
+                })
               }
-            }}
-          />
+              onBlur={(isNew, isDirty) => {
+                if (!isDirty) {
+                  if (isNew) {
+                    removeNewTask(index);
+                  } else {
+                    setTaskEditableStatus(index, false);
+                  }
+                }
+              }}
+            />
+          ) : (
+            <TaskCard
+              key={task._id}
+              title={task.title || ""}
+              description={task.description || ""}
+              created_by={task.created_by || ""}
+              className="mb-4"
+              onClick={() => setTaskEditableStatus(index, true)}
+            />
+          )
         )}
       </div>
       <div>
-        <button onClick={() => setIsAdding(true)} className="btn w-full">
+        <button onClick={() => addNewTask()} className="btn w-full">
           Add Task
         </button>
       </div>

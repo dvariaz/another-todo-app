@@ -1,11 +1,11 @@
-import { User } from "@common/types/User";
-import { TaskGroup } from "@task/types/Task";
+import { IUser } from "@common/types/User";
+import { ITaskGroup } from "@task/types/Task";
 
-export interface Dashboard {
+export interface IDashboard {
   _id: string;
   title: string;
   description: string;
   background_photo: string;
-  shared_users: User[];
-  task_groups: TaskGroup[];
+  shared_users: IUser[];
+  task_groups: ITaskGroup[];
 }

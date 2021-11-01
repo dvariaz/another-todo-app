@@ -4,21 +4,19 @@ import { SubmitHandler, useForm } from "react-hook-form";
 
 import "@task/styles/TaskCard.css";
 
+// Types
+import { ITask } from "@task/types/Task";
+
 // Components
 import TextareaAutosize from "react-textarea-autosize";
 
 interface IEditableTaskCardProps {
   title?: string;
   description?: string;
-  onSave?: (data: EditableTask) => void;
-  onBlur?: (isDirty: boolean) => void;
+  onSave?: (data: Partial<ITask>) => void;
+  onBlur?: (isNew: boolean, isDirty: boolean) => void;
   className?: string;
 }
-
-type EditableTask = {
-  title: string;
-  description: string;
-};
 
 const EditableTaskCard = ({
   title,
@@ -32,9 +30,9 @@ const EditableTaskCard = ({
     reset,
     handleSubmit,
     formState: { isValid, isDirty },
-  } = useForm<EditableTask>({ mode: "onChange" });
+  } = useForm<Partial<ITask>>({ mode: "onChange" });
 
-  const onSubmit: SubmitHandler<EditableTask> = (data: EditableTask) => {
+  const onSubmit: SubmitHandler<Partial<ITask>> = (data: Partial<ITask>) => {
     onSave && onSave(data);
   };
 
@@ -49,7 +47,8 @@ const EditableTaskCard = ({
     <form
       onSubmit={handleSubmit(onSubmit)}
       onBlur={() => {
-        onBlur && onBlur(isDirty);
+        const isNew = title === "" && description === "";
+        onBlur && onBlur(isNew, isDirty);
       }}
       className={classNames("task-card card flex flex-col", className)}
     >

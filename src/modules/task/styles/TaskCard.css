@@ -13,4 +13,18 @@
   p {
     @apply font-light text-gray-300;
   }
+
+  .drag-indicator {
+    @apply hidden justify-center w-full;
+
+    .indicator {
+      @apply bg-gray-100 rounded-sm mb-2;
+      width: 50px;
+      height: 4px;
+    }
+  }
+
+  &:hover .drag-indicator {
+    display: flex;
+  }
 }

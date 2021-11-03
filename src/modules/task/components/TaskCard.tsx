@@ -35,6 +35,9 @@ const TaskCard = ({
 
   return (
     <div className={classNames("task-card card flex flex-col", className)}>
+      <div className="drag-indicator">
+        <i className="indicator" />
+      </div>
       <div className="flex justify-between mb-2">
         <h4 onClick={onClick}>{title}</h4>
         {renderCreatorPhoto()}

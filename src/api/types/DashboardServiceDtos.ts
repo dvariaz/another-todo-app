@@ -5,7 +5,6 @@ export interface UpdateTaskDto extends Partial<ITask> {
 }
 
 export interface CreateTaskInTaskGroupDto extends Partial<ITask> {
-  dashboard: string;
-  taskGroup: string;
+  taskGroupId: string;
   position: number;
 }

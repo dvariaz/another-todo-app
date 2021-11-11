@@ -18,7 +18,7 @@ const HomePage = () => {
         <ProfileDropdown name="John Doe" />
       </header>
       {isLoading ? (
-        <span>Cargando</span>
+        <span>Loading</span>
       ) : (
         data && (
           <div className="card-container p-5 grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-5">

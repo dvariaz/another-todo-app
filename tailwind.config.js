@@ -55,6 +55,7 @@ module.exports = {
     extend: {
       backgroundColor: ["active"],
       margin: ["first", "last"],
+      borderWidth: ["first", "last"],
     },
   },
   plugins: [],

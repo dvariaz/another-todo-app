@@ -5,31 +5,26 @@ import classNames from "classnames";
 import "@task/styles/TaskGroup.css";
 
 // Types
-import { ITask, ITaskCard } from "@task/types/Task";
-import { TDashboardParams } from "src/App";
+import { ITaskCardState } from "@task/types/Task";
 import { IPosition } from "@common/types/Position";
 
 // Components
-import TaskCard from "@task/components/TaskCard";
-import EditableTaskCard from "./EditableTaskCard";
+import TaskContainer from "@task/containers/TaskContainer";
 
 // Hooks
 import { useParams } from "react-router";
-import useTaskGroupHandler from "@task/hooks/useTaskGroupHandler";
+import useDashboardManager from "@dashboard/hooks/useDashboardManager";
 
 interface ITaskGroupProps {
   id: string;
   name: string;
-  initialTasks: ITask[];
-
+  tasks: ITaskCardState;
   className?: string;
 }
 
-const TaskGroup = ({ id, name, initialTasks, className }: ITaskGroupProps) => {
+const TaskGroup = ({ id, name, tasks, className }: ITaskGroupProps) => {
   const ref = useRef<HTMLDivElement>(null);
-  const { id: dashboardId } = useParams<TDashboardParams>();
-  const { tasks, addNewTask, removeNewTask, setTaskEditableStatus, saveTask } =
-    useTaskGroupHandler(initialTasks);
+  const { addNewTask } = useDashboardManager();
 
   return (
     <div ref={ref} className={classNames("task-group", className)}>
@@ -40,8 +35,9 @@ const TaskGroup = ({ id, name, initialTasks, className }: ITaskGroupProps) => {
         </button>
       </div>
       <div>
-        {tasks.map((task, index) => (
+        {Object.keys(tasks).map((taskId, index) => (
           <motion.div
+            key={taskId}
             drag
             onDragEnd={(e: PointerEvent) => {
               console.log("client ", e.clientX, e.clientY);
@@ -50,44 +46,12 @@ const TaskGroup = ({ id, name, initialTasks, className }: ITaskGroupProps) => {
               // onDragEnd && onDragEnd({ x: clientX, y: clientY });
             }}
           >
-            {task.isEditing ? (
-              <EditableTaskCard
-                key={`${task._id}_${index}`}
-                {...task}
-                className="mb-4"
-                onSave={async (data) =>
-                  saveTask({
-                    task: data,
-                    index,
-                    dashboardId: dashboardId,
-                    taskGroupId: id,
-                  })
-                }
-                onBlur={(isNew, isDirty) => {
-                  if (!isDirty) {
-                    if (isNew) {
-                      removeNewTask(index);
-                    } else {
-                      setTaskEditableStatus(index, false);
-                    }
-                  }
-                }}
-              />
-            ) : (
-              <TaskCard
-                key={task._id}
-                title={task.title || ""}
-                description={task.description || ""}
-                created_by={task.created_by || ""}
-                className="mb-4"
-                onClick={() => setTaskEditableStatus(index, true)}
-              />
-            )}
+            <TaskContainer id={taskId} taskGroupId={id} index={index} />
           </motion.div>
         ))}
       </div>
       <div>
-        <button onClick={() => addNewTask()} className="btn w-full">
+        <button onClick={() => addNewTask(id)} className="btn w-full">
           Add Task
         </button>
       </div>

@@ -11,20 +11,24 @@ import { ITask } from "@task/types/Task";
 import TextareaAutosize from "react-textarea-autosize";
 
 interface IEditableTaskCardProps {
+  id: string;
   title?: string;
   description?: string;
-  onSave?: (data: Partial<ITask>) => void;
+  onSave?: (data: Partial<ITask>, isNew: boolean) => void;
   onBlur?: (isNew: boolean, isDirty: boolean) => void;
   className?: string;
 }
 
 const EditableTaskCard = ({
+  id,
   title,
   description,
   onSave,
   onBlur,
   className,
 }: IEditableTaskCardProps) => {
+  const isNew = id.includes("pending");
+
   const {
     register,
     reset,
@@ -33,12 +37,10 @@ const EditableTaskCard = ({
   } = useForm<Partial<ITask>>({ mode: "onChange" });
 
   const onSubmit: SubmitHandler<Partial<ITask>> = (data: Partial<ITask>) => {
-    onSave && onSave(data);
+    onSave && onSave(data, isNew);
   };
 
-  /**
-   * Effect to refresh form by changing props
-   */
+  // Effect to refresh form by changing props
   useEffect(() => {
     reset({ title, description });
   }, [title, description]);
@@ -47,7 +49,6 @@ const EditableTaskCard = ({
     <form
       onSubmit={handleSubmit(onSubmit)}
       onBlur={() => {
-        const isNew = title === "" && description === "";
         onBlur && onBlur(isNew, isDirty);
       }}
       className={classNames("task-card card flex flex-col", className)}

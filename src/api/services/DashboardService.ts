@@ -4,41 +4,118 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { API_URL } from "@config/consts";
 
 // Types
+import { IUser } from "@common/types/User";
 import { IDashboard } from "@dashboard/types/Dashboard";
-import { ITask } from "@task/types/Task";
+import { ITask, ITaskGroup } from "@task/types/Task";
 import { CreateTaskInTaskGroupDto } from "@api/types/DashboardServiceDtos";
 
 export const dashboardApi = createApi({
   reducerPath: "dashboardApi",
-  tagTypes: ["Dashboard"],
+  tagTypes: ["User", "Dashboard", "TaskGroup", "Task"],
   baseQuery: fetchBaseQuery({ baseUrl: API_URL }),
   endpoints: (builder) => ({
+    getUserById: builder.query<IUser, string>({
+      query: (id) => `users/${id}`,
+      providesTags: (result, error, id) => {
+        return [{ type: "User", id }];
+      },
+    }),
+    getUsersByIds: builder.query<IUser[], string[]>({
+      async queryFn(usersIds, _queryApi, _extraOptions, fetchWithBQ) {
+        const responses = await Promise.all(
+          usersIds.map((userId) => fetchWithBQ(`users/${userId}`))
+        );
+
+        if (responses.some((response) => !!response.error)) {
+          throw "Error fetching users";
+        }
+
+        const users: IUser[] = responses.map(
+          (response) => response.data as IUser
+        );
+
+        return { data: users };
+      },
+      providesTags: (result, error, usersIds) => {
+        return usersIds.map((id) => ({ type: "User", id }));
+      },
+    }),
     getDashboards: builder.query<IDashboard[], void>({
       query: () => `dashboards`,
     }),
-    getDashboard: builder.query<IDashboard, string>({
+    getDashboardById: builder.query<IDashboard, string>({
       query: (id) => `dashboards/${id}`,
       providesTags: (result, error, id) => {
         return [{ type: "Dashboard", id }];
       },
     }),
-    createTaskInTaskGroup: builder.mutation<ITask, CreateTaskInTaskGroupDto>({
-      query: ({ dashboard, taskGroup, position, ...taskPayload }) => {
+    getTaskGroupById: builder.query<ITaskGroup, string>({
+      query: (id) => `task-groups/${id}`,
+      providesTags: (result, error, id) => {
+        return [{ type: "TaskGroup", id }];
+      },
+    }),
+    getTaskById: builder.query<ITask, string>({
+      query: (id) => `tasks/${id}`,
+      providesTags: (result, error, id) => {
+        return [{ type: "Task", id }];
+      },
+    }),
+    updateTask: builder.mutation<ITask, Partial<ITask>>({
+      query: ({ _id, ...payload }) => {
         return {
-          url: `dashboards/${dashboard}/task-groups/${taskGroup}`,
+          url: `tasks/${_id}`,
+          method: "PUT",
+          body: payload,
+        };
+      },
+      invalidatesTags: (result, error, { _id }) => [
+        {
+          type: "Task",
+          id: _id,
+        },
+      ],
+    }),
+    deleteTask: builder.mutation<
+      ITask,
+      { taskId: string; taskGroupId: string }
+    >({
+      query: ({ taskId, taskGroupId }) => {
+        return {
+          url: `task-groups/${taskGroupId}/task/${taskId}`,
+          method: "DELETE",
+        };
+      },
+      invalidatesTags: (result, error, { taskGroupId }) => [
+        {
+          type: "TaskGroup",
+          id: taskGroupId,
+        },
+      ],
+    }),
+    createTaskInTaskGroup: builder.mutation<ITask, CreateTaskInTaskGroupDto>({
+      query: ({ taskGroupId, position, ...taskPayload }) => {
+        return {
+          url: `task-groups/${taskGroupId}`,
           method: "POST",
           body: { ...taskPayload, position },
         };
       },
-      invalidatesTags: (result, error, { dashboard }) => [
-        { type: "Dashboard", id: dashboard },
+      invalidatesTags: (result, error, { taskGroupId }) => [
+        { type: "TaskGroup", id: taskGroupId },
       ],
     }),
   }),
 });
 
 export const {
+  useGetUserByIdQuery,
+  useGetUsersByIdsQuery,
   useGetDashboardsQuery,
-  useGetDashboardQuery,
+  useGetDashboardByIdQuery,
+  useGetTaskGroupByIdQuery,
+  useGetTaskByIdQuery,
+  useUpdateTaskMutation,
+  useDeleteTaskMutation,
   useCreateTaskInTaskGroupMutation,
 } = dashboardApi;

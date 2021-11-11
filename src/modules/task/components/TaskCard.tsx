@@ -9,7 +9,8 @@ import { IUser } from "@common/types/User";
 interface ITaskCardProps {
   title: string;
   description: string;
-  created_by: IUser | string;
+  shared_users: IUser[];
+  options?: React.ReactNode;
   onClick?: (e: React.MouseEvent<HTMLElement>) => void;
   className?: string;
 }
@@ -17,20 +18,21 @@ interface ITaskCardProps {
 const TaskCard = ({
   title,
   description,
-  created_by,
+  shared_users,
+  options,
   onClick,
   className,
 }: ITaskCardProps) => {
-  const renderCreatorPhoto = () => {
-    if (typeof created_by !== "string") {
-      return (
-        <img
-          src={created_by.profile_photo}
-          className="circle-photo ml-4"
-          alt={`${created_by.name} photo`}
-        />
-      );
-    }
+  const renderSharedUsers = () => {
+    const [firstUser] = shared_users;
+
+    return (
+      <img
+        src={firstUser.profile_photo}
+        className="circle-photo mr-4"
+        alt={`${firstUser.name} photo`}
+      />
+    );
   };
 
   return (
@@ -38,11 +40,16 @@ const TaskCard = ({
       <div className="drag-indicator">
         <i className="indicator" />
       </div>
-      <div className="flex justify-between mb-2">
-        <h4 onClick={onClick}>{title}</h4>
-        {renderCreatorPhoto()}
+      <div className="flex mb-2">
+        {shared_users.length > 0 && renderSharedUsers()}
+        <h4 onClick={onClick} className="flex-1">
+          {title}
+        </h4>
+        {options}
       </div>
-      <p className="text-sm">{description}</p>
+      <p onClick={onClick} className="text-sm">
+        {description}
+      </p>
     </div>
   );
 };

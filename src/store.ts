@@ -4,9 +4,13 @@ import { setupListeners } from "@reduxjs/toolkit/query";
 // API Slices
 import { dashboardApi } from "@api/services/DashboardService";
 
+// UI Slices
+import { dashboardSlice } from "@dashboard/store/slice";
+
 export const store = configureStore({
   reducer: {
     [dashboardApi.reducerPath]: dashboardApi.reducer,
+    [dashboardSlice.name]: dashboardSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(dashboardApi.middleware),

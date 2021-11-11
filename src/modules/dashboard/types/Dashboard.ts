@@ -1,4 +1,3 @@
-import { IUser } from "@common/types/User";
 import { ITaskGroup } from "@task/types/Task";
 
 export interface IDashboard {
@@ -6,6 +5,6 @@ export interface IDashboard {
   title: string;
   description: string;
   background_photo: string;
-  shared_users: IUser[];
-  task_groups: ITaskGroup[];
+  shared_users: string[];
+  task_groups: Pick<ITaskGroup, "_id" | "tasks">[];
 }

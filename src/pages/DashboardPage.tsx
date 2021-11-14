@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import pluralize from "pluralize";
 
 // Types
@@ -12,9 +13,18 @@ import DashboardTasksContainer from "@dashboard/containers/DashboardTasksContain
 
 // Hooks
 import { useGetDashboardByIdQuery } from "@api/services/DashboardService";
+import useDashboardManager from "@dashboard/hooks/useDashboardManager";
 
 const DashboardPage = ({ match }: RouteComponentProps<TDashboardParams>) => {
   const { data, isLoading, error } = useGetDashboardByIdQuery(match.params.id);
+  const { cleanDashboard } = useDashboardManager();
+
+  useEffect(() => {
+    // Clean dashboard results after leaving page
+    return () => {
+      cleanDashboard();
+    };
+  }, []);
 
   if (error) return <div>{error}</div>;
 

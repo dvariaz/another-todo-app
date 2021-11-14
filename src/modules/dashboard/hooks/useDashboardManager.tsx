@@ -84,8 +84,13 @@ const useDashboardManager = () => {
     return deleteTask({ taskId, taskGroupId });
   };
 
+  const cleanDashboard = () => {
+    dispatch(DashboardActions.cleanDashboard());
+  };
+
   return {
     setTaskGroups,
+    cleanDashboard,
     addNewTask,
     removeNewTask,
     setTaskEditableStatus,

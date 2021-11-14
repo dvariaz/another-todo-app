@@ -131,6 +131,10 @@ export const dashboardSlice = createSlice({
         return { payload: { taskId, status } };
       },
     },
+    cleanDashboard: (state) => {
+      state.taskGroups = initialState.taskGroups;
+      state.tasks = initialState.tasks;
+    },
   },
 });
 

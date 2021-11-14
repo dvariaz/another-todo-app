@@ -1,41 +1,26 @@
-import { useEffect } from "react";
-
 // Components
 import TaskGroup from "@task/components/TaskGroup";
 
 // Hooks
-import { useGetTaskGroupByIdQuery } from "@api/services/DashboardService";
-import { useAppSelector } from "@common/hooks/rtk";
-import { DashboardSelectors } from "@dashboard/store/slice";
-import useDashboardManager from "@dashboard/hooks/useDashboardManager";
+import useTaskGroup from "@dashboard/hooks/useTaskGroup";
+import TaskGroupSkeleton from "@dashboard/components/TaskGroupSkeleton";
 
 interface ITaskGroupContainerProps {
   id: string;
 }
 
 const TaskGroupContainer = ({ id }: ITaskGroupContainerProps) => {
-  // Get task group data
-  const { data, error, isLoading } = useGetTaskGroupByIdQuery(id);
-  const { updateTaskGroupTasks } = useDashboardManager();
-
-  // Get task group state
-  const tasks = useAppSelector((state) =>
-    DashboardSelectors.selectTasksByTaskGroupId(state, id)
-  );
-
-  useEffect(() => {
-    if (data?.tasks) {
-      updateTaskGroupTasks(id, data.tasks);
-    }
-  }, [data?.tasks]);
+  const { taskGroup, error, isLoading } = useTaskGroup(id);
 
   if (error) return <div>{error}</div>;
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <TaskGroupSkeleton />;
 
-  if (!data) return <div>Task group not found</div>;
+  if (!taskGroup) return <div>Task group not found</div>;
 
-  return <TaskGroup id={id} name={data.name} tasks={tasks} />;
+  return (
+    <TaskGroup id={id} name={taskGroup.name || ""} tasks={taskGroup.tasks} />
+  );
 };
 
 export default TaskGroupContainer;

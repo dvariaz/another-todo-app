@@ -25,6 +25,7 @@ const DropdownMenu = ({ icon, items, iconClassName }: IDropdownMenuProps) => {
         <ul className="bg-white absolute top-0 -right-40 min-w-sm p-2 rounded-lg shadow-md text-center">
           {items.map(({ icon, label, callback }) => (
             <li
+              key={label}
               onClick={() => {
                 callback();
                 setIsOpen(false);

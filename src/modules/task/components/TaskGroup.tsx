@@ -1,18 +1,15 @@
 import { useRef } from "react";
-import { motion } from "framer-motion";
 import classNames from "classnames";
 
 import "@task/styles/TaskGroup.css";
 
 // Types
 import { ITaskCardState } from "@task/types/Task";
-import { IPosition } from "@common/types/Position";
 
 // Components
 import TaskContainer from "@task/containers/TaskContainer";
 
 // Hooks
-import { useParams } from "react-router";
 import useDashboardManager from "@dashboard/hooks/useDashboardManager";
 
 interface ITaskGroupProps {
@@ -36,18 +33,12 @@ const TaskGroup = ({ id, name, tasks, className }: ITaskGroupProps) => {
       </div>
       <div>
         {Object.keys(tasks).map((taskId, index) => (
-          <motion.div
+          <TaskContainer
             key={taskId}
-            drag
-            onDragEnd={(e: PointerEvent) => {
-              console.log("client ", e.clientX, e.clientY);
-
-              // const { clientX, clientY } = e;
-              // onDragEnd && onDragEnd({ x: clientX, y: clientY });
-            }}
-          >
-            <TaskContainer id={taskId} taskGroupId={id} index={index} />
-          </motion.div>
+            id={taskId}
+            taskGroupId={id}
+            index={index}
+          />
         ))}
       </div>
       <div>

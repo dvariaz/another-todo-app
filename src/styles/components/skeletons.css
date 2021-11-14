@@ -1,0 +1,4 @@
+.text-skeleton {
+  @apply bg-gray-150 animate-pulse rounded-sm my-2;
+  height: 1rem;
+}

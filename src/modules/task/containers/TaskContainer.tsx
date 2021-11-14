@@ -1,21 +1,14 @@
-// Types
-import { ITask } from "@task/types/Task";
+import { motion } from "framer-motion";
 
 // Components
 import TaskCard from "@task/components/TaskCard";
 import EditableTaskCard from "@task/components/EditableTaskCard";
 import DropdownMenu from "@common/components/DropdownMenu";
+import TaskCardSkeleton from "@task/components/TaskCardSkeleton";
 
 // Hooks
-import {
-  useGetTaskByIdQuery,
-  useGetUsersByIdsQuery,
-} from "@api/services/DashboardService";
+import useTask from "@task/hooks/useTask";
 import useDashboardManager from "@dashboard/hooks/useDashboardManager";
-import { useAppSelector } from "@common/hooks/rtk";
-
-//Selectors
-import { DashboardSelectors } from "@dashboard/store/slice";
 
 interface ITaskContainerProps {
   id: string;
@@ -24,30 +17,13 @@ interface ITaskContainerProps {
 }
 
 const TaskContainer = ({ id, taskGroupId, index }: ITaskContainerProps) => {
-  const {
-    data,
-    error,
-    isLoading,
-    isSuccess: isTaskFulfilled,
-  } = useGetTaskByIdQuery(id, {
-    skip: id.includes("pending"),
-  });
-  const { data: shared_users } = useGetUsersByIdsQuery(
-    data?.shared_users || [],
-    {
-      skip: !isTaskFulfilled,
-    }
-  );
-
+  const { task, error, isLoading } = useTask(id);
   const { setTaskEditableStatus, removeNewTask, saveTask, removeTask } =
     useDashboardManager();
-  const task = useAppSelector((state) =>
-    DashboardSelectors.selectTaskById(state, id)
-  );
 
   if (error) return <div>{error}</div>;
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <TaskCardSkeleton className="mb-4" />;
 
   if (task === undefined) return <div>Task not found</div>;
 
@@ -56,7 +32,8 @@ const TaskContainer = ({ id, taskGroupId, index }: ITaskContainerProps) => {
       <EditableTaskCard
         id={id}
         key={id}
-        {...data}
+        title={task.title}
+        description={task.description}
         className="mb-4"
         onSave={async (data, isNew) => {
           saveTask({
@@ -83,29 +60,38 @@ const TaskContainer = ({ id, taskGroupId, index }: ITaskContainerProps) => {
     );
   }
 
-  if (data === undefined) return <div>Task not found</div>;
-
   return (
-    <TaskCard
-      key={id}
-      title={data.title || ""}
-      description={data.description || ""}
-      shared_users={shared_users || []}
-      options={
-        <DropdownMenu
-          icon="more"
-          iconClassName="text-lg text-gray-300"
-          items={[
-            {
-              label: "Eliminar",
-              callback: () => removeTask({ taskId: id, taskGroupId }),
-            },
-          ]}
-        />
-      }
-      className="mb-4"
-      onClick={() => setTaskEditableStatus(id, true)}
-    />
+    <motion.div
+      className="z-50"
+      drag
+      onDragEnd={(e: PointerEvent) => {
+        console.log("client ", e.clientX, e.clientY);
+
+        // const { clientX, clientY } = e;
+        // onDragEnd && onDragEnd({ x: clientX, y: clientY });
+      }}
+    >
+      <TaskCard
+        key={id}
+        title={task.title || ""}
+        description={task.description || ""}
+        shared_users={task.shared_users || []}
+        options={
+          <DropdownMenu
+            icon="more"
+            iconClassName="text-lg text-gray-300"
+            items={[
+              {
+                label: "Eliminar",
+                callback: () => removeTask({ taskId: id, taskGroupId }),
+              },
+            ]}
+          />
+        }
+        className="mb-4"
+        onClick={() => setTaskEditableStatus(id, true)}
+      />
+    </motion.div>
   );
 };
 

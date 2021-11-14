@@ -1,5 +1,5 @@
 .task-card {
-  @apply text-gray-700 bg-white p-5 drop-shadow-md;
+  @apply text-gray-700 bg-white p-6 pt-8 drop-shadow-md relative;
 
   h1,
   h2,
@@ -15,10 +15,10 @@
   }
 
   .drag-indicator {
-    @apply hidden justify-center w-full;
+    @apply hidden items-center justify-center w-full absolute left-0 top-0 h-8 cursor-move;
 
     .indicator {
-      @apply bg-gray-100 rounded-sm mb-2;
+      @apply bg-gray-100 rounded-sm top-1;
       width: 50px;
       height: 4px;
     }

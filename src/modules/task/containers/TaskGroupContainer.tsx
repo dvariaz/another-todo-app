@@ -2,8 +2,8 @@
 import TaskGroup from "@task/components/TaskGroup";
 
 // Hooks
-import useTaskGroup from "@dashboard/hooks/useTaskGroup";
-import TaskGroupSkeleton from "@dashboard/components/TaskGroupSkeleton";
+import useTaskGroup from "@task/hooks/useTaskGroup";
+import TaskGroupSkeleton from "@task/components/TaskGroupSkeleton";
 
 interface ITaskGroupContainerProps {
   id: string;

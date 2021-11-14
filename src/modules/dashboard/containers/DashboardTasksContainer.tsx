@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { ITaskGroup } from "@task/types/Task";
 
 // Components
-import TaskGroupContainer from "./TaskGroupContainer";
+import TaskGroupContainer from "@task/containers/TaskGroupContainer";
 
 // Hooks
 import { useAppSelector } from "@common/hooks/rtk";

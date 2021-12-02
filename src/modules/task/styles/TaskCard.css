@@ -1,5 +1,5 @@
 .task-card {
-  @apply text-gray-700 bg-white p-6 pt-8 drop-shadow-md relative;
+  @apply text-gray-700 bg-white p-6 pt-8 drop-shadow-md relative overflow-hidden;
 
   h1,
   h2,

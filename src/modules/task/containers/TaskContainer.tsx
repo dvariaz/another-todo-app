@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { SyntheticEvent } from "react";
 
 // Components
 import TaskCard from "@task/components/TaskCard";
@@ -9,17 +9,25 @@ import TaskCardSkeleton from "@task/components/TaskCardSkeleton";
 // Hooks
 import useTask from "@task/hooks/useTask";
 import useDashboardManager from "@dashboard/hooks/useDashboardManager";
+import useTaskMoving from "@dashboard/hooks/useTaskMoving";
 
 interface ITaskContainerProps {
   id: string;
   index: number;
   taskGroupId: string;
+  onDrop?: (position: number) => void;
 }
 
-const TaskContainer = ({ id, taskGroupId, index }: ITaskContainerProps) => {
+const TaskContainer = ({
+  id,
+  taskGroupId,
+  index,
+  onDrop,
+}: ITaskContainerProps) => {
   const { task, error, isLoading } = useTask(id);
   const { setTaskEditableStatus, removeNewTask, saveTask, removeTask } =
     useDashboardManager();
+  const { taskMovingEvent, startTaskMoving } = useTaskMoving();
 
   if (error) return <div>{error}</div>;
 
@@ -59,39 +67,45 @@ const TaskContainer = ({ id, taskGroupId, index }: ITaskContainerProps) => {
       />
     );
   }
-
+  // TODO: Make helpers to indicate where the card is going to be placed depending the event onMouseEnter
   return (
-    <motion.div
-      className="z-50"
-      drag
-      onDragEnd={(e: PointerEvent) => {
-        console.log("client ", e.clientX, e.clientY);
-
-        // const { clientX, clientY } = e;
-        // onDragEnd && onDragEnd({ x: clientX, y: clientY });
-      }}
-    >
-      <TaskCard
-        key={id}
-        title={task.title || ""}
-        description={task.description || ""}
-        shared_users={task.shared_users || []}
-        options={
-          <DropdownMenu
-            icon="more"
-            iconClassName="text-lg text-gray-300"
-            items={[
-              {
-                label: "Eliminar",
-                callback: () => removeTask({ taskId: id, taskGroupId }),
-              },
-            ]}
-          />
+    <TaskCard
+      key={id}
+      title={task.title || ""}
+      description={task.description || ""}
+      shared_users={task.shared_users || []}
+      highlightableText={!taskMovingEvent.isMoving}
+      className="mb-4"
+      isCollapsed={task.isMoving}
+      options={
+        <DropdownMenu
+          icon="more"
+          iconClassName="text-lg text-gray-300"
+          items={[
+            {
+              label: "Eliminar",
+              callback: () => removeTask({ taskId: id, taskGroupId }),
+            },
+          ]}
+        />
+      }
+      onClick={() => setTaskEditableStatus(id, true)}
+      onIndicatorDragStart={(e: SyntheticEvent) => {
+        if (e.currentTarget) {
+          startTaskMoving(
+            id,
+            taskGroupId,
+            index,
+            e.currentTarget.getBoundingClientRect().toJSON()
+          );
         }
-        className="mb-4"
-        onClick={() => setTaskEditableStatus(id, true)}
-      />
-    </motion.div>
+      }}
+      onMouseUp={(e) => {
+        if (taskMovingEvent.isMoving) {
+          onDrop && onDrop(index);
+        }
+      }}
+    />
   );
 };
 

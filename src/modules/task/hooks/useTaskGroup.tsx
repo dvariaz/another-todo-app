@@ -25,7 +25,11 @@ const useTaskGroup = (id: string) => {
     }
   }, [data?.tasks]);
 
-  return { taskGroup: { ...data, tasks: tasksState }, error, isLoading };
+  return {
+    taskGroup: { ...data, tasks: tasksState },
+    error,
+    isLoading,
+  };
 };
 
 export default useTaskGroup;

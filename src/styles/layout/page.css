@@ -1,5 +1,5 @@
 .page {
-  @apply p-10;
+  @apply p-10 relative;
 }
 
 .page-title {

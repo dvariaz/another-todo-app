@@ -17,19 +17,7 @@ export interface ITaskGroup {
   updatedAt: string;
 }
 
-export interface ITaskCard extends Partial<ITask> {
-  isEditing: boolean;
-}
-
-export interface ITaskCardState {
-  [id: string]: {
-    isEditing: boolean;
-  };
-}
-
-export interface ITaskGroupState {
-  [id: string]: {
-    isEditing: boolean;
-    tasks: string[];
-  };
+export interface ITaskLocation {
+  taskGroupId: string;
+  position: number;
 }

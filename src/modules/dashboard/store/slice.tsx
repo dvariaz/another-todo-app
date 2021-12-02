@@ -2,47 +2,54 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 // Types
 import { RootState } from "src/store";
+import { ITaskGroup } from "@task/types/Task";
 import {
-  ITask,
-  ITaskCardState,
-  ITaskGroup,
+  ITaskMovingEventState,
+  ITaskState,
+  ITasksState,
   ITaskGroupState,
-} from "@task/types/Task";
+  ITaskGroupsState,
+  IRemoveNewTaskDto,
+  IAddTaskToTaskGroupDto,
+  IUpdateTaskGroupTasksDto,
+  ISetEditableStatusDto,
+  IStartTaskMovingEventDto,
+} from "./slice.types";
 
 // Utils
 import { v4 as uuid } from "uuid";
 
 interface IDashboardState {
-  taskGroups: ITaskGroupState;
-  tasks: ITaskCardState;
+  taskMovingEvent: ITaskMovingEventState;
+  taskGroups: ITaskGroupsState;
+  tasks: ITasksState;
 }
 
+// Initial States
+const taskInitialState: ITaskState = { isEditing: false, isMoving: false };
+
+const taskMovingEventInitialState: ITaskMovingEventState = {
+  isMoving: false,
+  taskId: "",
+  origin: {
+    taskGroupId: "",
+    position: -1,
+  },
+  pointer: {
+    x: 0,
+    y: 0,
+    height: 0,
+    width: 0,
+  },
+};
+
 const initialState: IDashboardState = {
+  taskMovingEvent: taskMovingEventInitialState,
   taskGroups: {},
   tasks: {},
 };
 
-interface ISetEditableStatusDto {
-  taskId: string;
-  status: boolean;
-}
-
-interface IRemoveNewTaskDto {
-  taskGroupId: string;
-  taskId: string;
-}
-
-interface IAddTaskToTaskGroupDto {
-  taskGroupId: string;
-  task: ITask;
-}
-
-interface IUpdateTaskGroupTasksDto {
-  taskGroupId: string;
-  tasks: string[];
-}
-
-//TODO: Mirar si es mas facil normalizar la estructura para añadir y eliminar elementos con el respectivo id
+// Slice
 export const dashboardSlice = createSlice({
   name: "dashboard",
   initialState,
@@ -51,8 +58,8 @@ export const dashboardSlice = createSlice({
       state,
       action: PayloadAction<Pick<ITaskGroup, "_id" | "tasks">[]>
     ) => {
-      const taskGroups: ITaskGroupState = {};
-      const tasks: ITaskCardState = {};
+      const taskGroups: ITaskGroupsState = {};
+      const tasks: ITasksState = {};
 
       action.payload.forEach((taskGroup) => {
         taskGroups[taskGroup._id] = {
@@ -63,6 +70,7 @@ export const dashboardSlice = createSlice({
         taskGroup.tasks.forEach((taskId) => {
           tasks[taskId] = {
             isEditing: false,
+            isMoving: false,
           };
         });
       });
@@ -80,7 +88,7 @@ export const dashboardSlice = createSlice({
 
         state.taskGroups[taskGroupId].tasks = tasks;
         tasks.forEach((taskId) => {
-          state.tasks[taskId] = { isEditing: false };
+          state.tasks[taskId] = taskInitialState;
         });
       },
       prepare: (taskGroupId, tasks) => {
@@ -92,7 +100,7 @@ export const dashboardSlice = createSlice({
         const { taskGroupId, task } = action.payload;
 
         state.taskGroups[taskGroupId].tasks.push(task._id);
-        state.tasks[task._id] = { isEditing: false };
+        state.tasks[task._id] = taskInitialState;
       },
       prepare: (taskGroupId, task) => {
         return { payload: { taskGroupId, task } };
@@ -103,7 +111,7 @@ export const dashboardSlice = createSlice({
       const tempId = uuid();
 
       state.taskGroups[taskGroupId].tasks.push(`pending_${tempId}`);
-      state.tasks[`pending_${tempId}`] = { isEditing: true };
+      state.tasks[`pending_${tempId}`] = { isEditing: true, isMoving: false };
     },
     removeNewTask: {
       reducer: (state, action: PayloadAction<IRemoveNewTaskDto>) => {
@@ -135,6 +143,33 @@ export const dashboardSlice = createSlice({
       state.taskGroups = initialState.taskGroups;
       state.tasks = initialState.tasks;
     },
+    startTaskMoving: (
+      state,
+      action: PayloadAction<IStartTaskMovingEventDto>
+    ) => {
+      const {
+        taskId,
+        taskGroupOrigin,
+        taskInitialPosition,
+        pointerInitialPosition,
+      } = action.payload;
+
+      state.taskMovingEvent = {
+        isMoving: true,
+        taskId,
+        pointer: pointerInitialPosition,
+        origin: {
+          taskGroupId: taskGroupOrigin,
+          position: taskInitialPosition,
+        },
+      };
+
+      state.tasks[taskId].isMoving = true;
+    },
+    cleanTaskMoving: (state) => {
+      state.tasks[state.taskMovingEvent?.taskId].isMoving = false;
+      state.taskMovingEvent = taskMovingEventInitialState;
+    },
   },
 });
 
@@ -150,8 +185,8 @@ export const DashboardSelectors = {
   selectTasksByTaskGroupId: (
     state: RootState,
     taskGroupId: string
-  ): ITaskCardState => {
-    const tasks: ITaskCardState = {};
+  ): ITasksState => {
+    const tasks: ITasksState = {};
 
     const taskGroupTasks =
       state[dashboardSlice.name].taskGroups[taskGroupId].tasks;
@@ -161,5 +196,8 @@ export const DashboardSelectors = {
     });
 
     return tasks;
+  },
+  selectTaskMovingEvent: (state: RootState) => {
+    return state[dashboardSlice.name].taskMovingEvent;
   },
 };

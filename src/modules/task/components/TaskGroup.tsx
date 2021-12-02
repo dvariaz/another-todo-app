@@ -1,30 +1,37 @@
-import { useRef } from "react";
+import { SyntheticEvent } from "react";
 import classNames from "classnames";
 
 import "@task/styles/TaskGroup.css";
 
 // Types
-import { ITaskCardState } from "@task/types/Task";
+import { ITasksState } from "@dashboard/store/slice.types";
 
 // Components
 import TaskContainer from "@task/containers/TaskContainer";
 
-// Hooks
-import useDashboardManager from "@dashboard/hooks/useDashboardManager";
-
 interface ITaskGroupProps {
   id: string;
   name: string;
-  tasks: ITaskCardState;
+  tasks: ITasksState;
+  onDrop?: (position: number) => void;
+  onAddTask?: (id: string) => void;
   className?: string;
 }
 
-const TaskGroup = ({ id, name, tasks, className }: ITaskGroupProps) => {
-  const ref = useRef<HTMLDivElement>(null);
-  const { addNewTask } = useDashboardManager();
+const TaskGroup = ({
+  id,
+  name,
+  tasks,
+  onDrop,
+  onAddTask,
+  className,
+}: ITaskGroupProps) => {
+  const handleAddTask = (e: SyntheticEvent) => {
+    onAddTask && onAddTask(id);
+  };
 
   return (
-    <div ref={ref} className={classNames("task-group", className)}>
+    <div className={classNames("task-group", className)}>
       <div className="flex mb-2">
         <h3 className="text-gray text-lg font-bold flex-1">{name}</h3>
         <button>
@@ -38,11 +45,12 @@ const TaskGroup = ({ id, name, tasks, className }: ITaskGroupProps) => {
             id={taskId}
             taskGroupId={id}
             index={index}
+            onDrop={(position) => onDrop && onDrop(position)}
           />
         ))}
       </div>
       <div>
-        <button onClick={() => addNewTask(id)} className="btn w-full">
+        <button onClick={handleAddTask} className="btn w-full">
           Add Task
         </button>
       </div>

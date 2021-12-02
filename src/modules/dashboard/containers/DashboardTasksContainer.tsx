@@ -5,10 +5,12 @@ import { ITaskGroup } from "@task/types/Task";
 
 // Components
 import TaskGroupContainer from "@task/containers/TaskGroupContainer";
+import TaskMovingIndicator from "@task/components/TaskMovingIndicator";
 
 // Hooks
 import { useAppSelector } from "@common/hooks/rtk";
 import useDashboardManager from "@dashboard/hooks/useDashboardManager";
+import useTaskMoving from "@dashboard/hooks/useTaskMoving";
 
 // Selectors
 import { DashboardSelectors } from "@dashboard/store/slice";
@@ -22,6 +24,7 @@ const DashboardTasksContainer = ({
 }: IDashboardTasksContainerProps) => {
   const taskGroups = useAppSelector(DashboardSelectors.selectTaskGroups);
   const { setTaskGroups } = useDashboardManager();
+  const { taskMovingEvent } = useTaskMoving();
 
   useEffect(() => {
     setTaskGroups(initialTaskGroups);
@@ -39,6 +42,14 @@ const DashboardTasksContainer = ({
           <button className="btn w-full">Add Group</button>
         </div>
       </div>
+      {taskMovingEvent.isMoving && (
+        <TaskMovingIndicator
+          initialPosition={{
+            x: taskMovingEvent.pointer.x + taskMovingEvent.pointer.width / 2,
+            y: taskMovingEvent.pointer.y + taskMovingEvent.pointer.height / 2,
+          }}
+        />
+      )}
     </div>
   );
 };

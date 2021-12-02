@@ -7,7 +7,10 @@ import { API_URL } from "@config/consts";
 import { IUser } from "@common/types/User";
 import { IDashboard } from "@dashboard/types/Dashboard";
 import { ITask, ITaskGroup } from "@task/types/Task";
-import { CreateTaskInTaskGroupDto } from "@api/types/DashboardServiceDtos";
+import {
+  ICreateTaskInTaskGroupDto,
+  IMoveTaskDto,
+} from "@api/types/DashboardServiceDtos";
 
 export const dashboardApi = createApi({
   reducerPath: "dashboardApi",
@@ -93,7 +96,7 @@ export const dashboardApi = createApi({
         },
       ],
     }),
-    createTaskInTaskGroup: builder.mutation<ITask, CreateTaskInTaskGroupDto>({
+    createTaskInTaskGroup: builder.mutation<ITask, ICreateTaskInTaskGroupDto>({
       query: ({ taskGroupId, position, ...taskPayload }) => {
         return {
           url: `task-groups/${taskGroupId}`,
@@ -103,6 +106,35 @@ export const dashboardApi = createApi({
       },
       invalidatesTags: (result, error, { taskGroupId }) => [
         { type: "TaskGroup", id: taskGroupId },
+      ],
+    }),
+    moveTask: builder.mutation<any, IMoveTaskDto>({
+      query: ({ taskId, origin, destination }) => {
+        return {
+          url: "tasks/move",
+          method: "PATCH",
+          body: {
+            task: taskId,
+            origin: {
+              task_group: origin.taskGroupId,
+              position: origin.position,
+            },
+            destination: {
+              task_group: destination.taskGroupId,
+              position: destination.position,
+            },
+          },
+        };
+      },
+      invalidatesTags: (result, error, { origin, destination }) => [
+        {
+          type: "TaskGroup",
+          id: origin.taskGroupId,
+        },
+        {
+          type: "TaskGroup",
+          id: destination.taskGroupId,
+        },
       ],
     }),
   }),
@@ -118,4 +150,5 @@ export const {
   useUpdateTaskMutation,
   useDeleteTaskMutation,
   useCreateTaskInTaskGroupMutation,
+  useMoveTaskMutation,
 } = dashboardApi;

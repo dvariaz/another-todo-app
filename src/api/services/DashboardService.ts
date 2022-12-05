@@ -1,7 +1,4 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
-// Consts
-import { API_URL } from "@config/consts";
+import { createApi } from "@reduxjs/toolkit/query/react";
 
 // Types
 import { IUser } from "@common/types/User";
@@ -11,11 +8,12 @@ import {
   ICreateTaskInTaskGroupDto,
   IMoveTaskDto,
 } from "@api/types/DashboardServiceDtos";
+import { baseQueryWithReauth } from "@common/utils/queries";
 
 export const dashboardApi = createApi({
   reducerPath: "dashboardApi",
   tagTypes: ["User", "Dashboard", "TaskGroup", "Task"],
-  baseQuery: fetchBaseQuery({ baseUrl: API_URL }),
+  baseQuery: baseQueryWithReauth,
   endpoints: (builder) => ({
     getUserById: builder.query<IUser, string>({
       query: (id) => `users/${id}`,

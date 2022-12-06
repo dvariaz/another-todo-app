@@ -15,6 +15,11 @@ module.exports = {
           700: "#363485",
           900: "#252448",
         },
+        "primary-shadow": {
+          100: "#bdbcd0",
+          DEFAULT: "#363485",
+          500: "#51507b",
+        },
         success: {
           50: "#DBF8D3",
           100: "#BFFFAD",

@@ -6,6 +6,7 @@
 @import "@styles/components/inputs.css";
 @import "@styles/components/cards.css";
 @import "@styles/components/photos.css";
+@import "@styles/components/graphics.css";
 @import "@styles/components/skeletons.css";
 
 @tailwind utilities;
